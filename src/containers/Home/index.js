@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 import { parse } from "qs";
 
 export class Home extends Component {
@@ -19,6 +20,13 @@ export class Home extends Component {
   };
 
   render() {
-    return <h1>Authorised Spotify!</h1>;
+    return (
+      <>
+        <h1>Authorised Spotify!</h1>
+        <NavLink to="/create-playlist" exact={true}>
+          Create Playlist
+        </NavLink>
+      </>
+    );
   }
 }
