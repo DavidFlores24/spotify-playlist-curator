@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { getFromSpotify, getCookie } from "../../utils";
+import { getFromSpotify, getCookie, postToSpotify } from "../../utils";
 import { PlaylistItem, Playlist } from "../../components";
 
 import styles from "./CreatePlaylist.css";
@@ -98,7 +98,41 @@ export class CreatePlaylist extends Component {
     });
   };
 
-  addPlaylistToSpotify = () => {};
+  addPlaylistToSpotify = () => {
+    this.getUser().then(user => {
+      const { id } = user;
+      const { newPlaylist } = this.state;
+      const { name, tracks } = newPlaylist;
+
+      const playlist = {
+        collaborative: false,
+        name,
+        public: true
+      };
+
+      postToSpotify(`users/${id}/playlists`, header, {}, playlist).then(res => {
+        const { id } = res;
+        const uris = tracks.map(track => track.uri);
+
+        postToSpotify(`playlists/${id}/tracks`, header, {}, { uris });
+      });
+    });
+  };
+
+  async getUser() {
+    return getFromSpotify("me", header);
+  }
+
+  onBlur = e => {
+    const playlistName = e.target.value;
+
+    if (playlistName !== "") {
+      const { newPlaylist } = this.state;
+      newPlaylist.name = playlistName;
+
+      this.setState({ newPlaylist: newPlaylist });
+    }
+  };
 
   render() {
     this.playlistItems = this.state.playlists.map((playlist, index) => (
@@ -118,7 +152,12 @@ export class CreatePlaylist extends Component {
         <div className={styles.button} onClick={this.generatePlaylist}>
           Create new Playlist
         </div>
-        <Playlist name={name} tracks={tracks} />
+        <Playlist
+          name={name}
+          tracks={tracks}
+          onBlur={this.onBlur}
+          onClick={this.addPlaylistToSpotify}
+        />
       </>
     );
   }
