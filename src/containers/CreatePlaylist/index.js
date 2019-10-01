@@ -31,7 +31,9 @@ export class CreatePlaylist extends Component {
   }
 
   async getPlaylists() {
-    return getFromSpotify("me/playlists", header).then(res => res.items);
+    return getFromSpotify("me/playlists", header).then(res => {
+      return res ? res.items : []
+    });
   }
 
   onToggle = playlistKey => {
@@ -56,7 +58,7 @@ export class CreatePlaylist extends Component {
     const { id } = playlist;
 
     return getFromSpotify(`playlists/${id}/tracks`, header).then(res => {
-      return { playlist, tracks: res.items.map(item => item.track) };
+      return res ? { playlist, tracks: res.items.map(item => item.track) } : {};
     });
   }
 
@@ -80,7 +82,7 @@ export class CreatePlaylist extends Component {
             if (
               !playlistTracks.includes(track) &&
               coveredTime + duration_ms <=
-                this.state.newPlaylist.duration + overshoot
+              this.state.newPlaylist.duration + overshoot
             ) {
               playlistTracks.push(track);
               coveredTime += duration_ms;
