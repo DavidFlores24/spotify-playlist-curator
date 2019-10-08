@@ -193,7 +193,10 @@ export class CreatePlaylist extends Component {
 						<Header label={"Select your Playlists to inspire the Curator"} />
 					</div>
 
-					<div className={styles.duration}>
+					{/* TODO Add Small header component */}
+					<h3>How long should the playlist last?</h3>
+
+					<div className={styles.duration} id="durationSlider">
 						<input
 							type="range"
 							min="10"
@@ -202,6 +205,7 @@ export class CreatePlaylist extends Component {
 							onInput={e => this.setPlaylistDuration(e)}
 						/>
 						<div id="durationSpan"></div>
+						<span>minutes</span>
 					</div>
 
 					<div className={styles.playlists}>
@@ -229,5 +233,13 @@ export class CreatePlaylist extends Component {
 				)}
 			</>
 		);
+	}
+
+	componentDidMount() {
+		const duration = this.state.newPlaylist.duration / 60000;
+
+		document.getElementById("durationSpan").innerText = duration;
+
+		document.getElementById("durationSlider").value = duration;
 	}
 }
