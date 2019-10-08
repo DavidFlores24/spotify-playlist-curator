@@ -3,7 +3,7 @@ export function getCookie(cookieName) {
   const cookieArray = cookies.split(";");
 
   for (let i = 0; i < cookieArray.length; i++) {
-    const cookie = cookieArray[i];
+    let cookie = cookieArray[i];
 
     while (cookie.charAt(0) === " ") {
       cookie = cookie.substring(1);
