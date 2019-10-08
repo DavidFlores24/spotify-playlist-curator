@@ -1,0 +1,20 @@
+.page {
+}
+
+.buttons {
+    margin-top: 20vw;
+}
+
+.button {
+    text-align: center;
+    width: 33%;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.description {
+    margin-top: 10%;
+    padding: 0;
+    word-wrap: normal;
+    width: 100%
+}
