@@ -1,9 +1,78 @@
-.playlists {
+.duration div {
 	display: inline-block;
+
+	margin-left: 2.5%;
+
+	padding: 0.2vw 0 0.5vw 0;
+
+	width: 10%;
+	height: 1.5vw;
+
+	background-color: transparent;
+
+	border: 1px solid #c5c6c7;
+	border-radius: 3vw;
+
+	text-align: center;
+
+	vertical-align: middle;
+}
+
+.slider {
+	display: inline-block;
+	vertical-align: middle;
+
+	-webkit-appearance: none;
+	appearance: none;
+	width: 70%;
+	height: 1.302vw;
+	background: #d3d3d3;
+	outline: none;
+	opacity: 0.7;
+	-webkit-transition: 0.2s;
+	transition: opacity 0.2s;
+}
+
+.slider:hover {
+	opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 25px;
+	height: 25px;
+	background: #4caf50;
+	cursor: pointer;
+}
+
+.selector {
+	display: inline-block;
+
+	width: 100%;
+}
+
+.playlists {
+	width: 100%;
+
+	margin-top: 3.5vw;
+}
+
+.column {
+	width: 33.3333333%;
+
+	display: inline-block;
+
+	vertical-align: top;
+}
+
+.header {
 	width: 50%;
 }
 
 .button {
-	display: inline-block;
-	width: 50%;
+	display: block;
+	width: 100%;
+
+	text-align: center;
 }
