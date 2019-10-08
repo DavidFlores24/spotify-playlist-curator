@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import "fetch";
 import { stringify } from "qs";
 
-import classes from "./login.css";
+import { Button } from '../../components';
+
+import styles from "./login.css";
 
 const client_id = "c53dddffc9054b819be83e2a53a9c148";
-const secretKey = "285cd151d5244adc89c0d55bc702bf67";
 const redirect_uri = "http://localhost:3000/home";
 
 export class Login extends Component {
@@ -34,8 +35,10 @@ export class Login extends Component {
 
   render() {
     return (
-      <div className={classes.button} onClick={this.requestAuthorisation}>
-        Connect with Spotify
+      <div className={styles.page}>
+        <div className={styles.button}>
+          <Button onClick={this.requestAuthorisation} label='Connect with Spotify' />
+        </div>
       </div>
     );
   }
