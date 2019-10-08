@@ -1,166 +1,233 @@
 import React, { Component } from "react";
 
 import { getFromSpotify, getCookie, postToSpotify } from "../../utils";
-import { PlaylistItem, Playlist } from "../../components";
+import { Button, Header, PlaylistItem, Playlist } from "../../components";
 
 import styles from "./CreatePlaylist.css";
 
 const token = getCookie("token");
 const header = {
-  Authorization: `Bearer ${token}`
+	Authorization: `Bearer ${token}`
 };
 
 export class CreatePlaylist extends Component {
-  constructor() {
-    super();
+	constructor() {
+		super();
 
-    this.state = {
-      playlists: [],
-      selectedPlaylists: [],
-      newPlaylist: {
-        duration: 600000,
-        numberOfTracks: 0,
-        name: "",
-        tracks: []
-      }
-    };
+		this.state = {
+			playlists: [],
+			selectedPlaylists: [],
+			showNewPlaylist: false,
+			newPlaylist: {
+				duration: 600000,
+				numberOfTracks: 0,
+				name: "",
+				tracks: []
+			}
+		};
 
-    this.getPlaylists().then(playlists =>
-      this.setState({ playlists: playlists })
-    );
-  }
+		this.getPlaylists().then(playlists =>
+			this.setState({ playlists: playlists })
+		);
+	}
 
-  async getPlaylists() {
-    return getFromSpotify("me/playlists", header).then(res => {
-      return res ? res.items : []
-    });
-  }
+	async getPlaylists() {
+		return getFromSpotify("me/playlists", header).then(res => {
+			return res ? res.items : [];
+		});
+	}
 
-  onToggle = playlistKey => {
-    const playlistToAdd = this.state.playlists[playlistKey];
+	onToggle = playlistKey => {
+		const playlistToAdd = this.state.playlists[playlistKey];
 
-    const toggledPlaylists = this.state.selectedPlaylists;
-    toggledPlaylists.push(playlistToAdd);
+		const toggledPlaylists = this.state.selectedPlaylists;
+		toggledPlaylists.push(playlistToAdd);
 
-    this.setState({ selectedPlaylists: toggledPlaylists });
-  };
+		this.setState({ selectedPlaylists: toggledPlaylists });
+	};
 
-  generatePlaylist = () => {
-    const promises = [];
-    this.state.selectedPlaylists.map(playlist =>
-      promises.push(this.getPlaylistTracks(playlist))
-    );
+	generatePlaylist = () => {
+		if (this.state.selectedPlaylists === []) {
+			return;
+		}
 
-    this.setCandidateTracks(promises);
-  };
+		const promises = [];
+		this.state.selectedPlaylists.map(playlist =>
+			promises.push(this.getPlaylistTracks(playlist))
+		);
 
-  async getPlaylistTracks(playlist) {
-    const { id } = playlist;
+		this.setCandidateTracks(promises);
+	};
 
-    return getFromSpotify(`playlists/${id}/tracks`, header).then(res => {
-      return res ? { playlist, tracks: res.items.map(item => item.track) } : {};
-    });
-  }
+	async getPlaylistTracks(playlist) {
+		const { id } = playlist;
 
-  setCandidateTracks = playlistPromises => {
-    Promise.all(playlistPromises).then(res => {
-      const overshoot = 30000;
-      let coveredTime = 0;
-      const playlistTracks = [];
+		return getFromSpotify(`playlists/${id}/tracks`, header).then(res => {
+			return res ? { playlist, tracks: res.items.map(item => item.track) } : {};
+		});
+	}
 
-      while (this.state.newPlaylist.duration - overshoot > coveredTime) {
-        res.forEach(playlist => {
-          let { tracks } = playlist;
+	setCandidateTracks = playlistPromises => {
+		Promise.all(playlistPromises).then(res => {
+			const overshoot = 30000;
+			let coveredTime = 0;
+			const playlistTracks = [];
 
-          tracks = tracks.filter(track => track !== null);
-          tracks.sort((a, b) => b.popularity - a.popularity);
+			while (this.state.newPlaylist.duration - overshoot > coveredTime) {
+				res.forEach(playlist => {
+					let { tracks } = playlist;
 
-          // need to use a for loop to be able to break
-          for (let i = 0; i < tracks.length; i++) {
-            const track = tracks[i];
-            const { duration_ms } = track;
-            if (
-              !playlistTracks.includes(track) &&
-              coveredTime + duration_ms <=
-              this.state.newPlaylist.duration + overshoot
-            ) {
-              playlistTracks.push(track);
-              coveredTime += duration_ms;
-              break;
-            }
-          }
-        });
-      }
+					tracks = tracks.filter(track => track !== null);
+					tracks.sort((a, b) => b.popularity - a.popularity);
 
-      const newPlaylist = this.state.newPlaylist;
-      newPlaylist.numberOfTracks = playlistTracks.length;
-      newPlaylist.tracks = playlistTracks;
+					// need to use a for loop to be able to break
+					for (let i = 0; i < tracks.length; i++) {
+						const track = tracks[i];
+						const { duration_ms } = track;
+						if (
+							!playlistTracks.includes(track) &&
+							coveredTime + duration_ms <=
+								this.state.newPlaylist.duration + overshoot
+						) {
+							playlistTracks.push(track);
+							coveredTime += duration_ms;
+							break;
+						}
+					}
+				});
+			}
 
-      this.setState({ newPlaylist: newPlaylist });
-    });
-  };
+			const newPlaylist = this.state.newPlaylist;
+			newPlaylist.numberOfTracks = playlistTracks.length;
+			newPlaylist.tracks = playlistTracks;
 
-  addPlaylistToSpotify = () => {
-    this.getUser().then(user => {
-      const { id } = user;
-      const { newPlaylist } = this.state;
-      const { name, tracks } = newPlaylist;
+			this.setState({
+				newPlaylist: newPlaylist,
+				showNewPlaylist: true
+			});
+		});
+	};
 
-      const playlist = {
-        collaborative: false,
-        name,
-        public: true
-      };
+	addPlaylistToSpotify = () => {
+		this.getUser().then(user => {
+			const { id } = user;
+			const { newPlaylist } = this.state;
+			const { name, tracks } = newPlaylist;
 
-      postToSpotify(`users/${id}/playlists`, header, {}, playlist).then(res => {
-        const { id } = res;
-        const uris = tracks.map(track => track.uri);
+			const playlist = {
+				collaborative: false,
+				name,
+				public: true
+			};
 
-        postToSpotify(`playlists/${id}/tracks`, header, {}, { uris });
-      });
-    });
-  };
+			postToSpotify(`users/${id}/playlists`, header, {}, playlist).then(res => {
+				const { id } = res;
+				const uris = tracks.map(track => track.uri);
 
-  async getUser() {
-    return getFromSpotify("me", header);
-  }
+				postToSpotify(`playlists/${id}/tracks`, header, {}, { uris });
+			});
+		});
+	};
 
-  onBlur = e => {
-    const playlistName = e.target.value;
+	async getUser() {
+		return getFromSpotify("me", header);
+	}
 
-    if (playlistName !== "") {
-      const { newPlaylist } = this.state;
-      newPlaylist.name = playlistName;
+	onBlur = e => {
+		const playlistName = e.target.value;
 
-      this.setState({ newPlaylist: newPlaylist });
-    }
-  };
+		if (playlistName !== "") {
+			const { newPlaylist } = this.state;
+			newPlaylist.name = playlistName;
 
-  render() {
-    this.playlistItems = this.state.playlists.map((playlist, index) => (
-      <PlaylistItem
-        name={playlist.name}
-        key={index}
-        onToggle={() => this.onToggle(index)}
-      ></PlaylistItem>
-    ));
+			this.setState({ newPlaylist: newPlaylist });
+		}
+	};
 
-    const { name, tracks } = this.state.newPlaylist;
+	sortPlaylists = () => {
+		this.one = [];
+		this.two = [];
+		this.three = [];
 
-    return (
-      <>
-        <h1>Got the Playlists!</h1>
-        <div className={styles.playlists}>{this.playlistItems}</div>
-        <div className={styles.button} onClick={this.generatePlaylist}>
-          Create new Playlist
-        </div>
-        <Playlist
-          name={name}
-          tracks={tracks}
-          onBlur={this.onBlur}
-          onClick={this.addPlaylistToSpotify}
-        />
-      </>
-    );
-  }
+		for (let i = 0; i < this.playlistItems.length; i++) {
+			if (i % 3 === 0) {
+				this.three.push(this.playlistItems[i]);
+			} else if (i % 2 === 0) {
+				this.two.push(this.playlistItems[i]);
+			} else {
+				this.one.push(this.playlistItems[i]);
+			}
+		}
+	};
+
+	setPlaylistDuration = e => {
+		const { newPlaylist } = this.state;
+		const { value } = e.target;
+
+		const duration = value * 60000;
+		newPlaylist.duration = duration;
+
+		this.setState({
+			newPlaylist: newPlaylist
+		});
+
+		document.getElementById("durationSpan").innerText = value;
+	};
+
+	render() {
+		this.playlistItems = this.state.playlists.map((playlist, index) => (
+			<PlaylistItem
+				name={playlist.name}
+				key={index}
+				onToggle={() => this.onToggle(index)}
+			></PlaylistItem>
+		));
+		this.sortPlaylists();
+
+		const { name, tracks } = this.state.newPlaylist;
+
+		return (
+			<>
+				<div className={styles.selector}>
+					<div className={styles.header}>
+						<Header label={"Select your Playlists to inspire the Curator"} />
+					</div>
+
+					<div className={styles.duration}>
+						<input
+							type="range"
+							min="10"
+							max="120"
+							className={styles.slider}
+							onInput={e => this.setPlaylistDuration(e)}
+						/>
+						<div id="durationSpan"></div>
+					</div>
+
+					<div className={styles.playlists}>
+						<div className={styles.column}>{this.one}</div>
+
+						<div className={styles.column}>{this.two}</div>
+
+						<div className={styles.column}>{this.three}</div>
+					</div>
+					<div className={styles.button}>
+						<Button
+							onClick={this.generatePlaylist}
+							label="Create new Playlist"
+						/>
+					</div>
+				</div>
+
+				{this.state.showNewPlaylist && (
+					<Playlist
+						name={name}
+						tracks={tracks}
+						onBlur={this.onBlur}
+						onClick={this.addPlaylistToSpotify}
+					/>
+				)}
+			</>
+		);
+	}
 }
