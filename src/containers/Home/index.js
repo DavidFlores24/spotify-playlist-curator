@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import { parse } from "qs";
 
+import { Button, Header } from '../../components';
+
+import styles from './Home.css';
+
 export class Home extends Component {
   constructor() {
     super();
@@ -22,10 +26,18 @@ export class Home extends Component {
   render() {
     return (
       <>
-        <h1>Authorised Spotify!</h1>
-        <NavLink to="/create-playlist" exact={true}>
-          Create Playlist
-        </NavLink>
+        <div className={styles.page}>
+          <Header label='Spotify Playlist Curator' />
+          <div className={styles.buttons}>
+            <div className={styles.button}>
+              <Button href="/create-playlist" label='Create New Playlist' />
+              <div className={styles.description}>
+                Create an entirely new playlist using your Spotify library.<br /><br />
+                Change the length of the playlist, add new tracks and see it in your Spotify app.
+              </div>
+            </div>
+          </div>
+        </div>
       </>
     );
   }
