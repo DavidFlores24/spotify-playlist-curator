@@ -1,19 +1,13 @@
 import React, { Component } from "react";
 
-import { getCookie } from "../../utils";
+import { getPlaylistsFromSpotify as getPlaylists } from "../../utils/spotifyUtils";
 import {
-	getPlaylistsFromSpotify as getPlaylists,
-	postToSpotify
-} from "../../utils/spotifyUtils";
-import { generatePlaylist } from "../../utils/playlistGenerationUtils";
+	generatePlaylist,
+	addPlaylistToSpotify as addPlaylist
+} from "../../utils/playlistGenerationUtils";
 import { Button, Header, PlaylistItem, Playlist } from "../../components";
 
 import styles from "./CreatePlaylist.css";
-
-const token = getCookie("token");
-const header = {
-	Authorization: `Bearer ${token}`
-};
 
 export class CreatePlaylist extends Component {
 	constructor() {
@@ -41,27 +35,6 @@ export class CreatePlaylist extends Component {
 		toggledPlaylists.push(playlistToAdd);
 
 		this.setState({ selectedPlaylists: toggledPlaylists });
-	};
-
-	addPlaylistToSpotify = () => {
-		this.getUser().then(user => {
-			const { id } = user;
-			const { newPlaylist } = this.state;
-			const { name, tracks } = newPlaylist;
-
-			const playlist = {
-				collaborative: false,
-				name,
-				public: true
-			};
-
-			postToSpotify(`users/${id}/playlists`, header, {}, playlist).then(res => {
-				const { id } = res;
-				const uris = tracks.map(track => track.uri);
-
-				postToSpotify(`playlists/${id}/tracks`, header, {}, { uris });
-			});
-		});
 	};
 
 	onBlur = e => {
@@ -121,6 +94,10 @@ export class CreatePlaylist extends Component {
 				showNewPlaylist: true
 			});
 		});
+	};
+
+	addPlaylistToSpotify = () => {
+		addPlaylist(this.state.newPlaylist);
 	};
 
 	render() {
