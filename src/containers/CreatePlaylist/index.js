@@ -8,6 +8,7 @@ import {
 	generatePlaylist,
 	addPlaylistToSpotify as addPlaylist
 } from "../../utils/playlistGenerationUtils";
+import { getCookie } from "../../utils";
 import { Button, Header, PlaylistItem, Playlist } from "../../components";
 
 import styles from "./CreatePlaylist.css";
@@ -99,27 +100,37 @@ export class CreatePlaylist extends Component {
 		});
 	};
 
-	switchTrack = (originalTrack, newTrackId, playlistId) => {
+	switchTrack = (track, trackIndex, newTrackId, playlistId) => {
+		const { track: originalTrack } = track;
 		getTrack(newTrackId).then(res => {
 			const newTrack = res;
-
 			const newPlaylist = this.state.newPlaylist;
 			const { tracks } = newPlaylist;
-			let trackIndex;
-
-			tracks.map(({ track }, index) => {
-				if (track.id === originalTrack.track.id) {
-					trackIndex = index;
-				}
-			});
 
 			tracks[trackIndex] = { playlistId, track: newTrack };
 			newPlaylist.tracks = tracks;
 
+			this.makeOriginalTrackReplacement(originalTrack, newTrackId, playlistId);
 			this.setState({
 				newPlaylist: newPlaylist
 			});
 		});
+	};
+
+	makeOriginalTrackReplacement = (track, newTrackId, playlistId) => {
+		let replacementTracks = JSON.parse(getCookie(`playlist_${playlistId}`));
+		replacementTracks = replacementTracks.filter(({ id }) => id !== newTrackId);
+
+		const { name, artists, id } = track;
+		replacementTracks.push({
+			name,
+			artists,
+			id
+		});
+
+		document.cookie = `playlist_${playlistId}=${JSON.stringify(
+			replacementTracks
+		)}`;
 	};
 
 	addPlaylistToSpotify = () => {
