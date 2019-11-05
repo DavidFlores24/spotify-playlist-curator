@@ -20,6 +20,7 @@ export const trackItem = props => {
 				originalTrack={track}
 				replacementTracks={props.replacementTracks}
 				onSwitch={props.onSwitch}
+				trackKey={props.index}
 			/>
 		</div>
 	);
