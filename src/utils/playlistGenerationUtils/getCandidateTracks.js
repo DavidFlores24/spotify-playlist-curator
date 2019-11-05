@@ -34,7 +34,9 @@ export async function getCandidateTracks(
 				tracks.sort((a, b) => b.popularity - a.popularity);
 
 				let playlistReplacements = [];
-				const playlistCookie = JSON.parse(getCookie(`playlist_${playlistId}`));
+				const playlistCookie = JSON.parse(
+					getCookie(`playlist_${playlistId}`) || "[]"
+				);
 
 				// need to use a for loop to be able to break
 				for (let i = 0; i < tracks.length; i++) {
