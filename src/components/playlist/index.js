@@ -6,13 +6,17 @@ import { TrackItem, Header, Button } from "../index";
 import styles from "./playlist.css";
 
 export const playlist = props => {
-	const tracks = props.tracks.map(({ track, playlistId }, index) => {
-		const replacementTracks = JSON.parse(getCookie(`playlist_${playlistId}`));
+	const tracks = props.tracks.map((track, index) => {
+		console.log(track);
+		const replacementTracks = JSON.parse(
+			getCookie(`playlist_${track.playlistId}`)
+		);
 		return (
 			<TrackItem
-				name={track.name}
+				track={track}
 				key={index}
 				replacementTracks={replacementTracks}
+				onSwitch={props.onSwitchTrack}
 			/>
 		);
 	});
