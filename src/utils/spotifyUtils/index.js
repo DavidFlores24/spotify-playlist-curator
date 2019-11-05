@@ -7,3 +7,4 @@ export { getFromSpotify };
 export { getPlaylistsFromSpotify };
 export { getSpotifyUser };
 export { postToSpotify };
+export { getTrackFromSpotify } from "./getTrackFromSpotify";
