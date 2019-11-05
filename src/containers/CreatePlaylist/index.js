@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 
-import { getPlaylistsFromSpotify as getPlaylists } from "../../utils/spotifyUtils";
+import {
+	getPlaylistsFromSpotify as getPlaylists,
+	getTrackFromSpotify as getTrack
+} from "../../utils/spotifyUtils";
 import {
 	generatePlaylist,
 	addPlaylistToSpotify as addPlaylist
@@ -96,6 +99,29 @@ export class CreatePlaylist extends Component {
 		});
 	};
 
+	switchTrack = (originalTrack, newTrackId, playlistId) => {
+		getTrack(newTrackId).then(res => {
+			const newTrack = res;
+
+			const newPlaylist = this.state.newPlaylist;
+			const { tracks } = newPlaylist;
+			let trackIndex;
+
+			tracks.map(({ track }, index) => {
+				if (track.id === originalTrack.track.id) {
+					trackIndex = index;
+				}
+			});
+
+			tracks[trackIndex] = { playlistId, track: newTrack };
+			newPlaylist.tracks = tracks;
+
+			this.setState({
+				newPlaylist: newPlaylist
+			});
+		});
+	};
+
 	addPlaylistToSpotify = () => {
 		addPlaylist(this.state.newPlaylist);
 	};
@@ -152,6 +178,7 @@ export class CreatePlaylist extends Component {
 						tracks={tracks}
 						onBlur={this.onBlur}
 						onClick={this.addPlaylistToSpotify}
+						onSwitchTrack={this.switchTrack}
 					/>
 				)}
 			</>
@@ -162,7 +189,6 @@ export class CreatePlaylist extends Component {
 		const duration = this.state.newPlaylist.duration / 60000;
 
 		document.getElementById("durationSpan").innerText = duration;
-
 		document.getElementById("durationSlider").value = duration;
 	}
 }
