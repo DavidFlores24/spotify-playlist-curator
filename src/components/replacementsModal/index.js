@@ -5,7 +5,7 @@ import { ReplacementTrack } from "../index";
 import classes from "./replacementsModal.css";
 
 export const replacementsModal = props => {
-	const { replacementTracks, originalTrack } = props;
+	const { replacementTracks, originalTrack, trackKey } = props;
 	const { playlistId } = originalTrack;
 
 	const tracks = replacementTracks.map(({ name, artists, id }, index) => {
@@ -16,7 +16,7 @@ export const replacementsModal = props => {
 				name={name}
 				artists={artistNames}
 				key={index}
-				onClick={() => props.onSwitch(originalTrack, id, playlistId)}
+				onClick={() => props.onSwitch(originalTrack, trackKey, id, playlistId)}
 			/>
 		);
 	});
