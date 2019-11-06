@@ -21,8 +21,13 @@ export const replacementsModal = props => {
 		);
 	});
 
+	let divClasses = [classes.replacements];
+	if (props.shouldShow) {
+		divClasses.push(classes.show);
+	}
+
 	return (
-		<div className={classes.replacements}>
+		<div className={divClasses.join(" ")}>
 			<ul>{tracks}</ul>
 		</div>
 	);

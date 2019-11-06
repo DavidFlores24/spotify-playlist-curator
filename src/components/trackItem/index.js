@@ -12,7 +12,7 @@ export const trackItem = props => {
 				<div className={classes.trackName}>{track.track.name}</div>
 				{/*TODO: add switch component
 				onClick = open Modal*/}
-				<div className={classes.replace} onClick={() => {}}>
+				<div className={classes.replace} onClick={props.showRecommendations}>
 					Switch this Track
 				</div>
 			</div>
@@ -21,6 +21,7 @@ export const trackItem = props => {
 				replacementTracks={props.replacementTracks}
 				onSwitch={props.onSwitch}
 				trackKey={props.index}
+				shouldShow={props.shouldShowRecommendations}
 			/>
 		</div>
 	);

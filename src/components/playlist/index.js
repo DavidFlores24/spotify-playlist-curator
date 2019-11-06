@@ -7,9 +7,10 @@ import styles from "./playlist.css";
 
 export const playlist = props => {
 	const tracks = props.tracks.map((track, index) => {
-		const replacementTracks = JSON.parse(
-			getCookie(`playlist_${track.playlistId}`)
-		);
+		const playlistCookie = getCookie(`playlist_${track.playlistId}`);
+		const replacementTracks =
+			playlistCookie === "" ? [] : JSON.parse(playlistCookie);
+
 		return (
 			<TrackItem
 				track={track}
@@ -17,6 +18,8 @@ export const playlist = props => {
 				index={index}
 				replacementTracks={replacementTracks}
 				onSwitch={props.onSwitchTrack}
+				showRecommendations={() => props.showRecommendations(index)}
+				shouldShowRecommendations={props.switchingTrackIndex === index}
 			/>
 		);
 	});
