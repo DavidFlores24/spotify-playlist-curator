@@ -1,0 +1,10 @@
+.replacements {
+	display: none;
+	width: 50%;
+	vertical-align: middle;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.show {
+	display: inline-block;
+}

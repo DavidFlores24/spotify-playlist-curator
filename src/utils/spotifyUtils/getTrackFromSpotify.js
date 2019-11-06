@@ -6,6 +6,7 @@ const header = {
 	Authorization: `Bearer ${token}`
 };
 
-export async function getSpotifyUser() {
-	return getFromSpotify("me", header);
+export async function getTrackFromSpotify(id) {
+	const track = await getFromSpotify(`tracks/${id}`, header);
+	return track;
 }

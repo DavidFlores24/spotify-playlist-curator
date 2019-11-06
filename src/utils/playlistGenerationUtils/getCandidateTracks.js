@@ -19,10 +19,12 @@ export async function getCandidateTracks(
 		const overshoot = 30000;
 		let coveredTime = 0;
 		const playlistTracks = [];
+		const includedTracks = [];
 
 		while (newPlaylistDuration - overshoot > coveredTime) {
 			res.forEach(playlist => {
 				let { tracks } = playlist;
+				const { playlist: playlistId } = playlist;
 
 				tracks = tracks.filter(track => track !== null);
 				tracks.sort((a, b) => b.popularity - a.popularity);
@@ -30,12 +32,13 @@ export async function getCandidateTracks(
 				// need to use a for loop to be able to break
 				for (let i = 0; i < tracks.length; i++) {
 					const track = tracks[i];
-					const { duration_ms } = track;
+					const { id, duration_ms } = track;
 					if (
-						!playlistTracks.includes(track) &&
+						!includedTracks.includes(id) &&
 						coveredTime + duration_ms <= newPlaylistDuration + overshoot
 					) {
-						playlistTracks.push(track);
+						playlistTracks.push({ playlistId, track });
+						includedTracks.push(id);
 						coveredTime += duration_ms;
 						break;
 					}

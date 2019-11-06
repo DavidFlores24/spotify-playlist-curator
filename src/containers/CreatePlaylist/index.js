@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 
-import { getPlaylistsFromSpotify as getPlaylists } from "../../utils/spotifyUtils";
+import {
+	getPlaylistsFromSpotify as getPlaylists,
+	getTrackFromSpotify as getTrack
+} from "../../utils/spotifyUtils";
 import {
 	generatePlaylist,
-	addPlaylistToSpotify as addPlaylist
+	addPlaylistToSpotify as addPlaylist,
+	generateRecommendations
 } from "../../utils/playlistGenerationUtils";
+import { getCookie } from "../../utils";
 import { Button, Header, PlaylistItem, Playlist } from "../../components";
 
 import styles from "./CreatePlaylist.css";
@@ -22,7 +27,10 @@ export class CreatePlaylist extends Component {
 				numberOfTracks: 0,
 				name: "",
 				tracks: []
-			}
+			},
+
+			isSwitching: false,
+			switchingTrackIndex: null
 		};
 
 		getPlaylists().then(playlists => this.setState({ playlists: playlists }));
@@ -86,6 +94,8 @@ export class CreatePlaylist extends Component {
 			const { newPlaylist } = this.state;
 			const { tracks, numberOfTracks } = res;
 
+			tracks.map(track => generateRecommendations(track));
+
 			newPlaylist.tracks = tracks;
 			newPlaylist.numberOfTracks = numberOfTracks;
 
@@ -94,6 +104,48 @@ export class CreatePlaylist extends Component {
 				showNewPlaylist: true
 			});
 		});
+	};
+
+	showRecommendations = trackIndex => {
+		this.setState({
+			isSwitching: true,
+			switchingTrackIndex: trackIndex
+		});
+	};
+
+	switchTrack = (track, trackIndex, newTrackId, playlistId) => {
+		const { track: originalTrack } = track;
+		getTrack(newTrackId).then(res => {
+			const newTrack = res;
+			const newPlaylist = this.state.newPlaylist;
+			const { tracks } = newPlaylist;
+
+			tracks[trackIndex] = { playlistId, track: newTrack };
+			newPlaylist.tracks = tracks;
+
+			this.makeOriginalTrackReplacement(originalTrack, newTrackId, playlistId);
+			this.setState({
+				newPlaylist: newPlaylist,
+				isSwitching: false,
+				switchingTrackIndex: null
+			});
+		});
+	};
+
+	makeOriginalTrackReplacement = (track, newTrackId, playlistId) => {
+		let replacementTracks = JSON.parse(getCookie(`playlist_${playlistId}`));
+		replacementTracks = replacementTracks.filter(({ id }) => id !== newTrackId);
+
+		const { name, artists, id } = track;
+		replacementTracks.push({
+			name,
+			artists,
+			id
+		});
+
+		document.cookie = `playlist_${playlistId}=${JSON.stringify(
+			replacementTracks
+		)}`;
 	};
 
 	addPlaylistToSpotify = () => {
@@ -152,6 +204,9 @@ export class CreatePlaylist extends Component {
 						tracks={tracks}
 						onBlur={this.onBlur}
 						onClick={this.addPlaylistToSpotify}
+						onSwitchTrack={this.switchTrack}
+						showRecommendations={this.showRecommendations}
+						switchingTrackIndex={this.state.switchingTrackIndex}
 					/>
 				)}
 			</>
@@ -162,7 +217,6 @@ export class CreatePlaylist extends Component {
 		const duration = this.state.newPlaylist.duration / 60000;
 
 		document.getElementById("durationSpan").innerText = duration;
-
 		document.getElementById("durationSlider").value = duration;
 	}
 }

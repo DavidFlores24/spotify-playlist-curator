@@ -7,3 +7,4 @@ export { addPlaylistToSpotify };
 export { generatePlaylist };
 export { getCandidateTracks };
 export { getPlaylistTracks };
+export { generateRecommendations } from "./generateRecommendations";

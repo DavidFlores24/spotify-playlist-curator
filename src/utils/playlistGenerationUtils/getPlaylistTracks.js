@@ -16,9 +16,7 @@ const header = {
 };
 
 export const getPlaylistTracks = playlist => {
-	const { id } = playlist;
-
-	return getFromSpotify(`playlists/${id}/tracks`, header).then(res => {
+	return getFromSpotify(`playlists/${playlist}/tracks`, header).then(res => {
 		return res ? { playlist, tracks: res.items.map(item => item.track) } : {};
 	});
 };

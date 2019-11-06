@@ -15,7 +15,7 @@ export async function generatePlaylist(playlists = [], newPlaylistDuration) {
 	}
 
 	const promises = [];
-	playlists.map(playlist => promises.push(getPlaylistTracks(playlist)));
+	playlists.map(playlist => promises.push(getPlaylistTracks(playlist.id)));
 
 	const tracks = await getCandidateTracks(promises, newPlaylistDuration);
 
