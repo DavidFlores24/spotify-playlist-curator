@@ -1,0 +1,7 @@
+.replacement {
+	margin-bottom: 1.2vw;
+}
+
+.replacement:last-child {
+	margin-bottom: 0;
+}

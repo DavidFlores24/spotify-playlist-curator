@@ -1,0 +1,25 @@
+.item {
+	display: block;
+
+	margin-bottom: 2.5vw;
+}
+
+.label {
+	display: inline-block;
+	width: 75%;
+
+	vertical-align: middle;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	
+	width: 2vw;
+	height: 2vw;
+
+	margin-left: 0.5vw;
+
+	vertical-align: middle;
+}
+

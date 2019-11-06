@@ -1,0 +1,35 @@
+.playlist {
+    margin-top: 5vw;
+
+    text-align: left;
+}
+
+.header {
+    margin: 0 0 3.5vw 0;
+}
+
+.name {
+    width: 50%;
+    height: 3.5vw;
+
+    background-color: #0b0c10;
+    border: 0.2vw solid #6BDB3B;
+    color: #c5c6c7;
+
+    font-size: 2vw;
+
+    padding: 1vw;
+}
+
+.name:focus {
+    outline: none;
+}
+
+.tracks {
+    margin-top: 3.5vw;
+    text-align: left;
+}
+
+.button {
+    text-align: center;
+}

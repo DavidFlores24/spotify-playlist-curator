@@ -1,0 +1,27 @@
+.item {
+	margin-bottom: 2.5vw;
+}
+
+.track {
+	display: inline-block;
+
+	vertical-align: middle;
+
+	width: 50%;
+
+	margin-bottom: 0.5vw;
+}
+
+.replace:hover {
+	color: rgba(107, 219, 59, 0.7);
+}
+
+.replace,
+.replace:visited {
+	font-size: 1.2vw;
+	cursor: pointer;
+
+	color: #6bdb3b;
+
+	transition: color 0.5s;
+}
