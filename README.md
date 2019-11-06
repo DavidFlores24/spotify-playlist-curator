@@ -12,8 +12,10 @@ This is the JS version of the Spotify playlist curator developed using ReactJS
 
 ## Required Code Changes
 - On `src/containers/Login/index.js` change the following lines:
-`10 const localIp = <YOUR_LOCAL_IP>`
-`11 const client_id = <YOUR_CLIENT_ID>`
+```
+10 const localIp = <YOUR_LOCAL_IP>
+11 const client_id = <YOUR_CLIENT_ID>
+```
 
 ## Installing
 ```
