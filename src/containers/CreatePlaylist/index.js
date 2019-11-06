@@ -6,7 +6,8 @@ import {
 } from "../../utils/spotifyUtils";
 import {
 	generatePlaylist,
-	addPlaylistToSpotify as addPlaylist
+	addPlaylistToSpotify as addPlaylist,
+	generateRecommendations
 } from "../../utils/playlistGenerationUtils";
 import { getCookie } from "../../utils";
 import { Button, Header, PlaylistItem, Playlist } from "../../components";
@@ -26,7 +27,10 @@ export class CreatePlaylist extends Component {
 				numberOfTracks: 0,
 				name: "",
 				tracks: []
-			}
+			},
+
+			isSwitching: false,
+			switchingTrackIndex: null
 		};
 
 		getPlaylists().then(playlists => this.setState({ playlists: playlists }));
@@ -90,6 +94,8 @@ export class CreatePlaylist extends Component {
 			const { newPlaylist } = this.state;
 			const { tracks, numberOfTracks } = res;
 
+			tracks.map(track => generateRecommendations(track));
+
 			newPlaylist.tracks = tracks;
 			newPlaylist.numberOfTracks = numberOfTracks;
 
@@ -97,6 +103,13 @@ export class CreatePlaylist extends Component {
 				newPlaylist: newPlaylist,
 				showNewPlaylist: true
 			});
+		});
+	};
+
+	showRecommendations = trackIndex => {
+		this.setState({
+			isSwitching: true,
+			switchingTrackIndex: trackIndex
 		});
 	};
 
@@ -112,7 +125,9 @@ export class CreatePlaylist extends Component {
 
 			this.makeOriginalTrackReplacement(originalTrack, newTrackId, playlistId);
 			this.setState({
-				newPlaylist: newPlaylist
+				newPlaylist: newPlaylist,
+				isSwitching: false,
+				switchingTrackIndex: null
 			});
 		});
 	};
@@ -190,6 +205,8 @@ export class CreatePlaylist extends Component {
 						onBlur={this.onBlur}
 						onClick={this.addPlaylistToSpotify}
 						onSwitchTrack={this.switchTrack}
+						showRecommendations={this.showRecommendations}
+						switchingTrackIndex={this.state.switchingTrackIndex}
 					/>
 				)}
 			</>
