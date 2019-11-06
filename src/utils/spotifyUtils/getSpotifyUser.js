@@ -1,5 +1,5 @@
 import { getCookie } from "../getCookie";
-import { getFromSpotify } from ".";
+import { getFromSpotify } from "./index";
 
 const token = getCookie("token");
 const header = {
