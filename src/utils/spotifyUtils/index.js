@@ -8,3 +8,4 @@ export { getPlaylistsFromSpotify };
 export { getSpotifyUser };
 export { postToSpotify };
 export { getTrackFromSpotify } from "./getTrackFromSpotify";
+export { getRecommendedTracks } from "./getRecommendedTracks";
