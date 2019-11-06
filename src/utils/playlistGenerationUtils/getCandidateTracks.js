@@ -9,8 +9,6 @@
     array with sorted tracks
 */
 
-import { getCookie } from "../index";
-
 export async function getCandidateTracks(
 	playlistPromises,
 	newPlaylistDuration
@@ -23,20 +21,13 @@ export async function getCandidateTracks(
 		const playlistTracks = [];
 		const includedTracks = [];
 
-		let replacementTracks = [];
-
 		while (newPlaylistDuration - overshoot > coveredTime) {
 			res.forEach(playlist => {
 				let { tracks } = playlist;
-				const { id: playlistId } = playlist.playlist;
+				const { playlist: playlistId } = playlist;
 
 				tracks = tracks.filter(track => track !== null);
 				tracks.sort((a, b) => b.popularity - a.popularity);
-
-				let playlistReplacements = [];
-				const playlistCookie = JSON.parse(
-					getCookie(`playlist_${playlistId}`) || "[]"
-				);
 
 				// need to use a for loop to be able to break
 				for (let i = 0; i < tracks.length; i++) {
@@ -49,37 +40,9 @@ export async function getCandidateTracks(
 						playlistTracks.push({ playlistId, track });
 						includedTracks.push(id);
 						coveredTime += duration_ms;
-
-						if (replacementTracks.includes(id)) {
-							playlistReplacements = playlistReplacements.filter(
-								track => track.id !== id
-							);
-
-							replacementTracks = replacementTracks.filter(
-								replacementTrackId => replacementTrackId !== id
-							);
-						}
-
 						break;
-					} else if (
-						playlistReplacements.length <= 5 &&
-						playlistCookie.length === 0
-					) {
-						// save up to 5 tracks to as replacement options per playlist
-						const { name, artists, id } = track;
-
-						if (!replacementTracks.includes(id)) {
-							const replacementTrack = { name, artists, id };
-
-							playlistReplacements.push(replacementTrack);
-							replacementTracks.push(id);
-						}
 					}
 				}
-
-				document.cookie = `playlist_${playlistId}=${JSON.stringify(
-					playlistReplacements
-				)}`;
 			});
 		}
 
