@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Button } from "../../components/index";
+import { ErrorOverlay } from "../../components/index";
+
+import styles from "./ErrorBoundary.css";
 
 export class ErrorBoundary extends Component {
 	constructor(props) {
@@ -31,21 +33,12 @@ export class ErrorBoundary extends Component {
 	}
 
 	render() {
-		let overlayClasses = [styles.overlay];
-
 		if (this.state.hasError) {
-			overlayClasses.push(styles.show);
+			return (
+				<ErrorOverlay message={this.state.errorInfo} dismiss={this.dismiss} />
+			);
+		} else {
+			return this.props.children;
 		}
-
-		return (
-			<div className={overlayClasses.join(" ")}>
-				<div className={styles.message}>
-					<div>{this.state.errorInfo}</div>
-				</div>
-				<div className={styles.button}>
-					<Button label={"Dismiss"} onClick={this.dismiss} />
-				</div>
-			</div>
-		);
 	}
 }
