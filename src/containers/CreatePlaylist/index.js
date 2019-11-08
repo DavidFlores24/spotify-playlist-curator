@@ -33,6 +33,8 @@ export class CreatePlaylist extends Component {
 			switchingTrackIndex: null
 		};
 
+		this.playlistRef = React.createRef();
+
 		getPlaylists().then(playlists => this.setState({ playlists: playlists }));
 	}
 
@@ -103,6 +105,8 @@ export class CreatePlaylist extends Component {
 				newPlaylist: newPlaylist,
 				showNewPlaylist: true
 			});
+
+			window.scrollTo(0, this.playlistRef.current.offsetTop);
 		});
 	};
 
@@ -165,7 +169,7 @@ export class CreatePlaylist extends Component {
 		const { name, tracks } = this.state.newPlaylist;
 
 		return (
-			<>
+			<div className={styles.createPlaylistPage}>
 				<div className={styles.selector}>
 					<div className={styles.header}>
 						<Header label={"Select your Playlists to inspire the Curator"} />
@@ -197,9 +201,9 @@ export class CreatePlaylist extends Component {
 						<Button onClick={this.createPlaylist} label="Create new Playlist" />
 					</div>
 				</div>
-
-				{this.state.showNewPlaylist && (
+				<div ref={this.playlistRef}>
 					<Playlist
+						show={this.state.showNewPlaylist}
 						name={name}
 						tracks={tracks}
 						onBlur={this.onBlur}
@@ -208,8 +212,8 @@ export class CreatePlaylist extends Component {
 						showRecommendations={this.showRecommendations}
 						switchingTrackIndex={this.state.switchingTrackIndex}
 					/>
-				)}
-			</>
+				</div>
+			</div>
 		);
 	}
 
