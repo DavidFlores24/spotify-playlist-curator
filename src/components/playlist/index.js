@@ -24,8 +24,13 @@ export const playlist = props => {
 		);
 	});
 
+	let playlistClasses = [styles.playlist];
+	if (props.show) {
+		playlistClasses.push([styles.show]);
+	}
+
 	return (
-		<div className={styles.playlist}>
+		<div className={playlistClasses.join(" ")}>
 			<div className={styles.header}>
 				<Header label="Your New Playlist" />
 			</div>
