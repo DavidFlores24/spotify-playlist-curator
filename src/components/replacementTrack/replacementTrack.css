@@ -1,5 +1,14 @@
-.replacement {
+.replacement:hover {
+	color: rgba(107, 219, 59, 0.4);
+}
+
+.replacement,
+.replacement:visited {
 	margin-bottom: 1.2vw;
+
+	cursor: pointer;
+	color: #6bdb3b;
+	transition: color 0.5s;
 }
 
 .replacement:last-child {

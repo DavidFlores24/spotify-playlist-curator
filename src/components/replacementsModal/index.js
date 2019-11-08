@@ -28,6 +28,10 @@ export const replacementsModal = props => {
 
 	return (
 		<div className={divClasses.join(" ")}>
+			<div className={classes.heading}>Recommended tracks</div>
+			<div className={classes.subheading}>
+				Select a new track as replacement
+			</div>
 			<ul>{tracks}</ul>
 		</div>
 	);

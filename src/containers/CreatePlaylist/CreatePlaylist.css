@@ -1,3 +1,7 @@
+.createPlaylistPage {
+	scroll-behavior: smooth;
+}
+
 .duration div {
 	display: inline-block;
 

@@ -10,7 +10,13 @@ import {
 	generateRecommendations
 } from "../../utils/playlistGenerationUtils";
 import { getCookie } from "../../utils";
-import { Button, Header, PlaylistItem, Playlist } from "../../components";
+import {
+	Button,
+	Header,
+	PlaylistItem,
+	Playlist,
+	Overlay
+} from "../../components";
 
 import styles from "./CreatePlaylist.css";
 
@@ -30,8 +36,12 @@ export class CreatePlaylist extends Component {
 			},
 
 			isSwitching: false,
-			switchingTrackIndex: null
+			switchingTrackIndex: null,
+
+			showOverlay: false
 		};
+
+		this.playlistRef = React.createRef();
 
 		getPlaylists().then(playlists => this.setState({ playlists: playlists }));
 	}
@@ -103,6 +113,8 @@ export class CreatePlaylist extends Component {
 				newPlaylist: newPlaylist,
 				showNewPlaylist: true
 			});
+
+			window.scrollTo(0, this.playlistRef.current.offsetTop);
 		});
 	};
 
@@ -150,6 +162,9 @@ export class CreatePlaylist extends Component {
 
 	addPlaylistToSpotify = () => {
 		addPlaylist(this.state.newPlaylist);
+		this.setState({ showOverlay: true });
+
+		setTimeout(() => this.setState({ showOverlay: false }), 5000);
 	};
 
 	render() {
@@ -165,7 +180,13 @@ export class CreatePlaylist extends Component {
 		const { name, tracks } = this.state.newPlaylist;
 
 		return (
-			<>
+			<div className={styles.createPlaylistPage}>
+				<Overlay
+					message={
+						"Your new Playlist is now on your Spotify Library! Go check it out."
+					}
+					show={this.state.showOverlay}
+				/>
 				<div className={styles.selector}>
 					<div className={styles.header}>
 						<Header label={"Select your Playlists to inspire the Curator"} />
@@ -197,9 +218,9 @@ export class CreatePlaylist extends Component {
 						<Button onClick={this.createPlaylist} label="Create new Playlist" />
 					</div>
 				</div>
-
-				{this.state.showNewPlaylist && (
+				<div ref={this.playlistRef}>
 					<Playlist
+						show={this.state.showNewPlaylist}
 						name={name}
 						tracks={tracks}
 						onBlur={this.onBlur}
@@ -208,8 +229,8 @@ export class CreatePlaylist extends Component {
 						showRecommendations={this.showRecommendations}
 						switchingTrackIndex={this.state.switchingTrackIndex}
 					/>
-				)}
-			</>
+				</div>
+			</div>
 		);
 	}
 

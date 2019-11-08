@@ -1,35 +1,50 @@
 .playlist {
-    margin-top: 5vw;
+	display: block;
+	visibility: hidden;
 
-    text-align: left;
+	padding-top: 2vw;
+
+	opacity: 0;
+
+	margin-top: 5vw;
+
+	text-align: left;
+
+	transition: 0.5s;
+}
+
+.show {
+	visibility: visible;
+
+	opacity: 1;
 }
 
 .header {
-    margin: 0 0 3.5vw 0;
+	margin: 0 0 3.5vw 0;
 }
 
 .name {
-    width: 50%;
-    height: 3.5vw;
+	width: 50%;
+	height: 3.5vw;
 
-    background-color: #0b0c10;
-    border: 0.2vw solid #6BDB3B;
-    color: #c5c6c7;
+	background-color: #0b0c10;
+	border: 0.2vw solid #6bdb3b;
+	color: #c5c6c7;
 
-    font-size: 2vw;
+	font-size: 2vw;
 
-    padding: 1vw;
+	padding: 1vw;
 }
 
 .name:focus {
-    outline: none;
+	outline: none;
 }
 
 .tracks {
-    margin-top: 3.5vw;
-    text-align: left;
+	margin-top: 3.5vw;
+	text-align: left;
 }
 
 .button {
-    text-align: center;
+	text-align: center;
 }

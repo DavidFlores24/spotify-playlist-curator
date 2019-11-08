@@ -1,0 +1,24 @@
+.overlay {
+	position: fixed;
+	visibility: hidden;
+
+	width: 100%;
+	height: 100%;
+
+	top: 0;
+	left: 0;
+
+	z-index: 0;
+	opacity: 0;
+	background-color: #0b0c10;
+	transition: 0.5s;
+
+	padding: 5vw;
+	line-height: 11vw;
+}
+
+.show {
+	visibility: visible;
+	opacity: 1;
+	z-index: 1000;
+}
