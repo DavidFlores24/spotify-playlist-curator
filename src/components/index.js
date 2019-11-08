@@ -11,3 +11,4 @@ export { button as Button };
 export { header as Header };
 export { replacementsModal as ReplacementsModal } from "./replacementsModal";
 export { replacementTrack as ReplacementTrack } from "./replacementTrack";
+export { overlay as Overlay } from "./overlay";
