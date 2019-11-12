@@ -118,7 +118,6 @@ export class Playlist extends Component {
 
   componentDidUpdate(prevProps) {
     const { show, tracks } = prevProps;
-    console.log(show, tracks);
 
     if (this.state.show !== show || this.state.tracks !== tracks) {
       this.setState({
