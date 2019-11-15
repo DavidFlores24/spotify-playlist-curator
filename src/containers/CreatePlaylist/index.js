@@ -123,45 +123,42 @@ export class CreatePlaylist extends Component {
 
     return (
       <div className={styles.createPlaylistPage}>
-        <ErrorBoundary>
-          <div className={styles.selector}>
-            <div className={styles.header}>
-              <Header label={"Select your Playlists to inspire the Curator"} />
-            </div>
-
-            {/* TODO Add Small header component */}
-            <h3>How long should the playlist last?</h3>
-
-            <div className={styles.duration} id="durationSlider">
-              <input
-                type="range"
-                min="10"
-                max="120"
-                className={styles.slider}
-                onInput={e => this.setPlaylistDuration(e)}
-              />
-              <div id="durationSpan"></div>
-              <span>minutes</span>
-            </div>
-
-            <div className={styles.playlists}>
-              <div className={styles.column}>{this.one}</div>
-
-              <div className={styles.column}>{this.two}</div>
-
-              <div className={styles.column}>{this.three}</div>
-            </div>
-            <div className={styles.button}>
-              <Button
-                onClick={this.createPlaylist}
-                label="Create new Playlist"
-              />
-            </div>
+        <div className={styles.selector}>
+          <div className={styles.header}>
+            <Header label={"Select your Playlists to inspire the Curator"} />
           </div>
-          <div ref={this.playlistRef}>
+
+          {/* TODO Add Small header component */}
+          <h3>How long should the playlist last?</h3>
+
+          <div className={styles.duration} id="durationSlider">
+            <input
+              type="range"
+              min="10"
+              max="120"
+              className={styles.slider}
+              onInput={e => this.setPlaylistDuration(e)}
+            />
+            <div id="durationSpan"></div>
+            <span>minutes</span>
+          </div>
+
+          <div className={styles.playlists}>
+            <div className={styles.column}>{this.one}</div>
+
+            <div className={styles.column}>{this.two}</div>
+
+            <div className={styles.column}>{this.three}</div>
+          </div>
+          <div className={styles.button}>
+            <Button onClick={this.createPlaylist} label="Create new Playlist" />
+          </div>
+        </div>
+        <div ref={this.playlistRef}>
+          <ErrorBoundary>
             <Playlist tracks={newPlaylist.tracks} show={showNewPlaylist} />
-          </div>
-        </ErrorBoundary>
+          </ErrorBoundary>
+        </div>
       </div>
     );
   }
