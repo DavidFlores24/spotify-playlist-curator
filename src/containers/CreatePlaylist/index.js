@@ -128,7 +128,7 @@ export class CreatePlaylist extends Component {
               min="10"
               max="120"
               className={styles.slider}
-              onInput={e => this.setPlaylistDuration(e)}
+              onInput={this.setPlaylistDuration}
             />
             <div id="durationSpan"></div>
             <span>minutes</span>
