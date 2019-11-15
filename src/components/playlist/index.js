@@ -32,7 +32,7 @@ export class Playlist extends Component {
 
     getTrack(newTrackId).then(res => {
       const newTrack = res;
-      const tracks = [...this.state.tracks];
+      const tracks = this.state.tracks;
 
       tracks[trackIndex] = { playlistId, track: newTrack };
 
