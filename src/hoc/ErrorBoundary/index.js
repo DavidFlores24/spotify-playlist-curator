@@ -12,6 +12,8 @@ export class ErrorBoundary extends Component {
       error: null,
       errorInfo: ""
     };
+
+    this.dismiss = this.dismiss.bind(this);
   }
 
   componentDidCatch(error, errorInfo) {
