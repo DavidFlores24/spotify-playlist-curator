@@ -81,7 +81,7 @@ export class Playlist extends Component {
           index={index}
           replacementTracks={replacementTracks}
           onSwitch={this.switchTrack}
-          showRecommendations={this.showRecommendations}
+          showRecommendations={() => this.showRecommendations(index)}
           shouldShowRecommendations={this.state.switchingTrackIndex === index}
         />
       );
