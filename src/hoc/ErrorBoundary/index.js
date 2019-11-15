@@ -36,6 +36,7 @@ export class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <ErrorOverlay
+          show={true}
           message={this.state.error.message}
           dismiss={this.dismiss}
         />
