@@ -4,19 +4,10 @@ import { getPlaylistsFromSpotify as getPlaylists } from "../../utils/spotifyUtil
 
 import {
   generatePlaylist,
-  addPlaylistToSpotify as addPlaylist,
   generateRecommendations
 } from "../../utils/playlistGenerationUtils";
 
-import { getCookie } from "../../utils";
-
-import {
-  Button,
-  Header,
-  PlaylistItem,
-  Playlist,
-  Overlay
-} from "../../components";
+import { Button, Header, PlaylistItem, Playlist } from "../../components";
 
 import { ErrorBoundary } from "../../hoc";
 
