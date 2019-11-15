@@ -21,7 +21,9 @@ export class Playlist extends Component {
       isSwitching: false,
 
       hasError: false,
-      error: null
+      error: null,
+
+      incorrectName: false
     };
   }
 
@@ -105,6 +107,8 @@ export class Playlist extends Component {
     this.setState({ name: name });
   };
 
+  validateName = e => this.setState({ incorrectName: e.target.value === "" });
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
       nextProps.tracks !== prevState.tracks ||
@@ -139,6 +143,13 @@ export class Playlist extends Component {
       playlistClasses.push(styles.show);
     }
 
+    let inputClasses = [styles.name];
+    let nameErrorClasses = [styles.nameError];
+    if (this.state.incorrectName) {
+      inputClasses.push(styles.invalid);
+      nameErrorClasses.push(styles.showError);
+    }
+
     return (
       <>
         <Overlay
@@ -149,12 +160,18 @@ export class Playlist extends Component {
           <div className={styles.header}>
             <Header label="Your New Playlist" />
           </div>
-          <input
-            type="text"
-            className={styles.name}
-            placeholder="Playlist name"
-            onBlur={this.setPlaylistName}
-          />
+          <div>
+            <input
+              type="text"
+              className={inputClasses.join(" ")}
+              placeholder="Playlist name"
+              onChange={this.setPlaylistName}
+              onBlur={this.validateName}
+            />
+            <div className={nameErrorClasses.join(" ")}>
+              Give your Playlist a name
+            </div>
+          </div>
           <div className={styles.tracks}>{trackItems}</div>
           <div className={styles.button}>
             <Button
