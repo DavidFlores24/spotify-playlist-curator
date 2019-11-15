@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { ErrorOverlay } from "../../components/index";
 
-import styles from "./ErrorBoundary.css";
-
 export class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
