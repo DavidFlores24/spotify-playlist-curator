@@ -38,8 +38,7 @@ export class CreatePlaylist extends Component {
 
       showOverlay: false,
 
-      hasError: false,
-      error: null
+      isSelectionInvalid: false
     };
 
     this.playlistRef = React.createRef();
@@ -72,6 +71,11 @@ export class CreatePlaylist extends Component {
   };
 
   async createPlaylist() {
+    if (this.state.selectedPlaylists.length === 0) {
+      this.setState({ isSelectionInvalid: true });
+      return;
+    }
+
     const newPlaylist = { ...this.state.newPlaylist };
     const playlist = await generatePlaylist(
       [...this.state.selectedPlaylists],
@@ -91,7 +95,12 @@ export class CreatePlaylist extends Component {
   }
 
   render() {
-    const { playlists, newPlaylist, showNewPlaylist } = this.state;
+    const {
+      isSelectionInvalid,
+      playlists,
+      newPlaylist,
+      showNewPlaylist
+    } = this.state;
 
     return (
       <div className={styles.createPlaylistPage}>
@@ -100,7 +109,6 @@ export class CreatePlaylist extends Component {
             <Header label={"Select your Playlists to inspire the Curator"} />
           </div>
 
-          {/* TODO Add Small header component */}
           <h3>How long should the playlist last?</h3>
 
           <div className={styles.duration} id="durationSlider">
@@ -117,7 +125,11 @@ export class CreatePlaylist extends Component {
 
           <PlaylistSelector playlists={playlists} onToggle={this.onToggle} />
           <div className={styles.button}>
-            <Button onClick={this.createPlaylist} label="Create new Playlist" />
+            <Button
+              onClick={this.createPlaylist}
+              label="Create new Playlist"
+              hasError={isSelectionInvalid}
+            />
           </div>
         </div>
         <div ref={this.playlistRef}>
