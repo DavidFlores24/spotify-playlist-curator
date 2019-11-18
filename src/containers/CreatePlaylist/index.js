@@ -7,7 +7,13 @@ import {
   generateRecommendations
 } from "../../utils/playlistGenerationUtils";
 
-import { Button, Header, PlaylistItem, Playlist } from "../../components";
+import {
+  Button,
+  Header,
+  PlaylistItem,
+  Playlist,
+  PlaylistSelector
+} from "../../components";
 
 import { ErrorBoundary } from "../../hoc";
 
@@ -51,22 +57,6 @@ export class CreatePlaylist extends Component {
     this.setState({ selectedPlaylists: toggledPlaylists });
   };
 
-  sortPlaylists = () => {
-    this.one = [];
-    this.two = [];
-    this.three = [];
-
-    for (let i = 0; i < this.playlistItems.length; i++) {
-      if (i % 3 === 0) {
-        this.three.push(this.playlistItems[i]);
-      } else if (i % 2 === 0) {
-        this.two.push(this.playlistItems[i]);
-      } else {
-        this.one.push(this.playlistItems[i]);
-      }
-    }
-  };
-
   setPlaylistDuration = e => {
     const { newPlaylist } = this.state;
     const { value } = e.target;
@@ -103,15 +93,6 @@ export class CreatePlaylist extends Component {
   render() {
     const { playlists, newPlaylist, showNewPlaylist } = this.state;
 
-    this.playlistItems = playlists.map((playlist, index) => (
-      <PlaylistItem
-        name={playlist.name}
-        key={index}
-        onToggle={() => this.onToggle(index)}
-      ></PlaylistItem>
-    ));
-    this.sortPlaylists();
-
     return (
       <div className={styles.createPlaylistPage}>
         <div className={styles.selector}>
@@ -134,13 +115,7 @@ export class CreatePlaylist extends Component {
             <span>minutes</span>
           </div>
 
-          <div className={styles.playlists}>
-            <div className={styles.column}>{this.one}</div>
-
-            <div className={styles.column}>{this.two}</div>
-
-            <div className={styles.column}>{this.three}</div>
-          </div>
+          <PlaylistSelector playlists={playlists} onToggle={this.onToggle} />
           <div className={styles.button}>
             <Button onClick={this.createPlaylist} label="Create new Playlist" />
           </div>
