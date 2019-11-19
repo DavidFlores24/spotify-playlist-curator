@@ -1,243 +1,150 @@
 import React, { Component } from "react";
 
+import { getPlaylistsFromSpotify as getPlaylists } from "../../utils/spotifyUtils";
+
 import {
-	getPlaylistsFromSpotify as getPlaylists,
-	getTrackFromSpotify as getTrack
-} from "../../utils/spotifyUtils";
-import {
-	generatePlaylist,
-	addPlaylistToSpotify as addPlaylist,
-	generateRecommendations
+  generatePlaylist,
+  generateRecommendations
 } from "../../utils/playlistGenerationUtils";
-import { getCookie } from "../../utils";
+
 import {
-	Button,
-	Header,
-	PlaylistItem,
-	Playlist,
-	Overlay
+  Button,
+  Header,
+  PlaylistItem,
+  Playlist,
+  PlaylistSelector
 } from "../../components";
+
+import { ErrorBoundary } from "../../hoc";
 
 import styles from "./CreatePlaylist.css";
 
 export class CreatePlaylist extends Component {
-	constructor() {
-		super();
+  constructor() {
+    super();
 
-		this.state = {
-			playlists: [],
-			selectedPlaylists: [],
-			showNewPlaylist: false,
-			newPlaylist: {
-				duration: 600000,
-				numberOfTracks: 0,
-				name: "",
-				tracks: []
-			},
+    this.state = {
+      playlists: [],
+      selectedPlaylists: [],
+      showNewPlaylist: false,
 
-			isSwitching: false,
-			switchingTrackIndex: null,
+      newPlaylist: {
+        duration: 600000,
+        tracks: []
+      },
 
-			showOverlay: false
-		};
+      isSwitching: false,
+      switchingTrackIndex: null,
 
-		this.playlistRef = React.createRef();
+      showOverlay: false,
 
-		getPlaylists().then(playlists => this.setState({ playlists: playlists }));
-	}
+      isSelectionInvalid: false
+    };
 
-	onToggle = playlistKey => {
-		const playlistToAdd = this.state.playlists[playlistKey];
+    this.playlistRef = React.createRef();
+    this.createPlaylist = this.createPlaylist.bind(this);
 
-		const toggledPlaylists = this.state.selectedPlaylists;
-		toggledPlaylists.push(playlistToAdd);
+    getPlaylists().then(playlists => this.setState({ playlists: playlists }));
+  }
 
-		this.setState({ selectedPlaylists: toggledPlaylists });
-	};
+  onToggle = playlistKey => {
+    const playlistToAdd = this.state.playlists[playlistKey];
 
-	onBlur = e => {
-		const playlistName = e.target.value;
+    const toggledPlaylists = this.state.selectedPlaylists;
+    toggledPlaylists.push(playlistToAdd);
 
-		if (playlistName !== "") {
-			const { newPlaylist } = this.state;
-			newPlaylist.name = playlistName;
+    this.setState({ selectedPlaylists: toggledPlaylists });
+  };
 
-			this.setState({ newPlaylist: newPlaylist });
-		}
-	};
+  setPlaylistDuration = e => {
+    const { newPlaylist } = this.state;
+    const { value } = e.target;
 
-	sortPlaylists = () => {
-		this.one = [];
-		this.two = [];
-		this.three = [];
+    const duration = value * 60000;
+    newPlaylist.duration = duration;
 
-		for (let i = 0; i < this.playlistItems.length; i++) {
-			if (i % 3 === 0) {
-				this.three.push(this.playlistItems[i]);
-			} else if (i % 2 === 0) {
-				this.two.push(this.playlistItems[i]);
-			} else {
-				this.one.push(this.playlistItems[i]);
-			}
-		}
-	};
+    this.setState({
+      newPlaylist: newPlaylist
+    });
 
-	setPlaylistDuration = e => {
-		const { newPlaylist } = this.state;
-		const { value } = e.target;
+    document.getElementById("durationSpan").innerText = value;
+  };
 
-		const duration = value * 60000;
-		newPlaylist.duration = duration;
+  async createPlaylist() {
+    if (this.state.selectedPlaylists.length === 0) {
+      this.setState({ isSelectionInvalid: true });
+      return;
+    }
 
-		this.setState({
-			newPlaylist: newPlaylist
-		});
+    const newPlaylist = { ...this.state.newPlaylist };
+    const playlist = await generatePlaylist(
+      [...this.state.selectedPlaylists],
+      newPlaylist.duration
+    );
 
-		document.getElementById("durationSpan").innerText = value;
-	};
+    const { tracks } = playlist;
+    tracks.map(track => generateRecommendations(track));
+    newPlaylist.tracks = tracks;
 
-	createPlaylist = () => {
-		generatePlaylist(
-			this.state.selectedPlaylists,
-			this.state.newPlaylist.duration
-		).then(res => {
-			const { newPlaylist } = this.state;
-			const { tracks, numberOfTracks } = res;
+    this.setState({
+      newPlaylist: newPlaylist,
+      showNewPlaylist: true
+    });
 
-			tracks.map(track => generateRecommendations(track));
+    window.scrollTo(0, this.playlistRef.current.offsetTop);
+  }
 
-			newPlaylist.tracks = tracks;
-			newPlaylist.numberOfTracks = numberOfTracks;
+  render() {
+    const {
+      isSelectionInvalid,
+      playlists,
+      newPlaylist,
+      showNewPlaylist
+    } = this.state;
 
-			this.setState({
-				newPlaylist: newPlaylist,
-				showNewPlaylist: true
-			});
+    return (
+      <div className={styles.createPlaylistPage}>
+        <div className={styles.selector}>
+          <div className={styles.header}>
+            <Header label={"Select your Playlists to inspire the Curator"} />
+          </div>
 
-			window.scrollTo(0, this.playlistRef.current.offsetTop);
-		});
-	};
+          <h3>How long should the playlist last?</h3>
 
-	showRecommendations = trackIndex => {
-		this.setState({
-			isSwitching: true,
-			switchingTrackIndex: trackIndex
-		});
-	};
+          <div className={styles.duration} id="durationSlider">
+            <input
+              type="range"
+              min="10"
+              max="120"
+              className={styles.slider}
+              onInput={this.setPlaylistDuration}
+            />
+            <div id="durationSpan"></div>
+            <span>minutes</span>
+          </div>
 
-	switchTrack = (track, trackIndex, newTrackId, playlistId) => {
-		const { track: originalTrack } = track;
-		getTrack(newTrackId).then(res => {
-			const newTrack = res;
-			const newPlaylist = this.state.newPlaylist;
-			const { tracks } = newPlaylist;
+          <PlaylistSelector playlists={playlists} onToggle={this.onToggle} />
+          <div className={styles.button}>
+            <Button
+              onClick={this.createPlaylist}
+              label="Create new Playlist"
+              hasError={isSelectionInvalid}
+            />
+          </div>
+        </div>
+        <div ref={this.playlistRef}>
+          <ErrorBoundary>
+            <Playlist tracks={newPlaylist.tracks} show={showNewPlaylist} />
+          </ErrorBoundary>
+        </div>
+      </div>
+    );
+  }
 
-			tracks[trackIndex] = { playlistId, track: newTrack };
-			newPlaylist.tracks = tracks;
+  componentDidMount() {
+    const duration = this.state.newPlaylist.duration / 60000;
 
-			this.makeOriginalTrackReplacement(originalTrack, newTrackId, playlistId);
-			this.setState({
-				newPlaylist: newPlaylist,
-				isSwitching: false,
-				switchingTrackIndex: null
-			});
-		});
-	};
-
-	makeOriginalTrackReplacement = (track, newTrackId, playlistId) => {
-		let replacementTracks = JSON.parse(getCookie(`playlist_${playlistId}`));
-		replacementTracks = replacementTracks.filter(({ id }) => id !== newTrackId);
-
-		const { name, artists, id } = track;
-		replacementTracks.push({
-			name,
-			artists,
-			id
-		});
-
-		document.cookie = `playlist_${playlistId}=${JSON.stringify(
-			replacementTracks
-		)}`;
-	};
-
-	addPlaylistToSpotify = () => {
-		addPlaylist(this.state.newPlaylist);
-		this.setState({ showOverlay: true });
-
-		setTimeout(() => this.setState({ showOverlay: false }), 5000);
-	};
-
-	render() {
-		this.playlistItems = this.state.playlists.map((playlist, index) => (
-			<PlaylistItem
-				name={playlist.name}
-				key={index}
-				onToggle={() => this.onToggle(index)}
-			></PlaylistItem>
-		));
-		this.sortPlaylists();
-
-		const { name, tracks } = this.state.newPlaylist;
-
-		return (
-			<div className={styles.createPlaylistPage}>
-				<Overlay
-					message={
-						"Your new Playlist is now on your Spotify Library! Go check it out."
-					}
-					show={this.state.showOverlay}
-				/>
-				<div className={styles.selector}>
-					<div className={styles.header}>
-						<Header label={"Select your Playlists to inspire the Curator"} />
-					</div>
-
-					{/* TODO Add Small header component */}
-					<h3>How long should the playlist last?</h3>
-
-					<div className={styles.duration} id="durationSlider">
-						<input
-							type="range"
-							min="10"
-							max="120"
-							className={styles.slider}
-							onInput={e => this.setPlaylistDuration(e)}
-						/>
-						<div id="durationSpan"></div>
-						<span>minutes</span>
-					</div>
-
-					<div className={styles.playlists}>
-						<div className={styles.column}>{this.one}</div>
-
-						<div className={styles.column}>{this.two}</div>
-
-						<div className={styles.column}>{this.three}</div>
-					</div>
-					<div className={styles.button}>
-						<Button onClick={this.createPlaylist} label="Create new Playlist" />
-					</div>
-				</div>
-				<div ref={this.playlistRef}>
-					<Playlist
-						show={this.state.showNewPlaylist}
-						name={name}
-						tracks={tracks}
-						onBlur={this.onBlur}
-						onClick={this.addPlaylistToSpotify}
-						onSwitchTrack={this.switchTrack}
-						showRecommendations={this.showRecommendations}
-						switchingTrackIndex={this.state.switchingTrackIndex}
-					/>
-				</div>
-			</div>
-		);
-	}
-
-	componentDidMount() {
-		const duration = this.state.newPlaylist.duration / 60000;
-
-		document.getElementById("durationSpan").innerText = duration;
-		document.getElementById("durationSlider").value = duration;
-	}
+    document.getElementById("durationSpan").innerText = duration;
+    document.getElementById("durationSlider").value = duration;
+  }
 }

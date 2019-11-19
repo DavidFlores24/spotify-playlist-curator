@@ -1,50 +1,69 @@
 .playlist {
-	display: block;
-	visibility: hidden;
+  display: block;
+  visibility: hidden;
 
-	padding-top: 2vw;
+  padding-top: 2vw;
 
-	opacity: 0;
+  opacity: 0;
 
-	margin-top: 5vw;
+  margin-top: 5vw;
 
-	text-align: left;
+  text-align: left;
 
-	transition: 0.5s;
+  transition: 0.5s;
 }
 
 .show {
-	visibility: visible;
+  visibility: visible;
 
-	opacity: 1;
+  opacity: 1;
 }
 
 .header {
-	margin: 0 0 3.5vw 0;
+  margin: 0 0 3.5vw 0;
 }
 
 .name {
-	width: 50%;
-	height: 3.5vw;
+  display: inline-block;
+  width: 50%;
+  height: 3.5vw;
 
-	background-color: #0b0c10;
-	border: 0.2vw solid #6bdb3b;
-	color: #c5c6c7;
+  background-color: #0b0c10;
+  border: 0.2vw solid #6bdb3b;
+  color: #c5c6c7;
 
-	font-size: 2vw;
+  font-size: 2vw;
 
-	padding: 1vw;
+  padding: 1vw;
+
+  transition: border 0.5s;
 }
 
 .name:focus {
-	outline: none;
+  outline: none;
+}
+
+.invalid {
+  border: 0.2vw solid #db4b3b;
+}
+
+.nameError {
+  display: inline-block;
+  margin-left: 2vw;
+  color: #db4b3b;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.showError {
+  opacity: 1;
 }
 
 .tracks {
-	margin-top: 3.5vw;
-	text-align: left;
+  margin-top: 3.5vw;
+  text-align: left;
 }
 
 .button {
-	text-align: center;
+  text-align: center;
 }

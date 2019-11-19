@@ -1,14 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import styles from './button.css';
+import styles from "./button.css";
 
 export const button = props => {
-    return (
-        <a
-            className={styles.button}
-            onClick={props.onClick}
-            href={props.href}>
-            {props.label}
-        </a>
-    )
-}
+  const classes = [styles.button];
+  if (props.hasError) {
+    classes.push(styles.error);
+  }
+
+  return (
+    <a className={classes.join(" ")} onClick={props.onClick} href={props.href}>
+      {props.label}
+    </a>
+  );
+};
