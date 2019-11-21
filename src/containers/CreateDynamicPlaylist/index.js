@@ -58,7 +58,7 @@ export class CreateDynamicPlaylist extends Component {
       }
     }
 
-    this.setState({ playlistSection: playlistSections });
+    this.setState({ playlistSections: playlistSections });
   };
 
   render() {
