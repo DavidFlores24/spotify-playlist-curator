@@ -54,7 +54,7 @@ export class PlaylistParameterSelector extends Component {
     if (!param) return;
 
     param.value = value;
-    this.onParamChange(this.sectionIndex, param);
+    this.onParamChange(this.state.sectionIndex, param);
     this.setState({ selectedParams: selectedParams });
   };
 
