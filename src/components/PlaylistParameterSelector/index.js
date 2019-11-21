@@ -18,25 +18,32 @@ export class PlaylistParameterSelector extends Component {
     super(props);
 
     this.state = {
-      selectedParams: []
+      selectedParams: [],
+      sectionIndex: props.sectionIndex
     };
+
+    this.onParamChange = props.onParamChange;
   }
 
   handleClick = paramIndex => {
     const selectedParams = this.state.selectedParams;
+    let param = selectedParams.find(x => x.paramIndex === paramIndex);
 
-    if (selectedParams.find(x => x.paramIndex === paramIndex)) {
+    if (param) {
       selectedParams.splice(paramIndex);
     } else {
-      const param = params[paramIndex];
+      const newParam = params[paramIndex];
 
-      selectedParams.push({
+      param = {
         paramIndex,
-        name: param.name,
-        value: param.range.min
-      });
+        name: newParam.name,
+        value: newParam.range.min,
+        isActive: true
+      };
+      selectedParams.push(param);
     }
 
+    this.onParamChange(this.state.sectionIndex, param);
     this.setState({ selectedParams: selectedParams });
   };
 
@@ -47,6 +54,7 @@ export class PlaylistParameterSelector extends Component {
     if (!param) return;
 
     param.value = value;
+    this.onParamChange(this.sectionIndex, param);
     this.setState({ selectedParams: selectedParams });
   };
 

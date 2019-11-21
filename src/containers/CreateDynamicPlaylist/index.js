@@ -1,39 +1,82 @@
 import React, { Component } from "react";
 
 import {
+  Button,
   Header,
   PlaylistSelector,
-  PlaylistParameterSelector
+  PlaylistSection
 } from "../../components";
 
 import styles from "./DynamicPlaylist.css";
 
 export class CreateDynamicPlaylist extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      activeStep: "sections",
+
+      playlistSections: [
+        {
+          sectionIndex: 0,
+          duration: 0,
+          params: []
+        }
+      ]
+    };
+  }
+
+  handleDurationChange = (sectionIndex, value) => {
+    const playlistSections = [...this.state.playlistSections];
+    const section = playlistSections.find(
+      playlistSection => playlistSection.sectionIndex === sectionIndex
+    );
+
+    section.duration = value;
+    this.setState({ playlistSections: playlistSections });
+  };
+
+  handleParamChange = (sectionIndex, param) => {
+    const playlistSections = [...this.state.playlistSections];
+    const section = playlistSections.find(
+      playlistSection => playlistSection.sectionIndex === sectionIndex
+    );
+
+    if (!section) return;
+
+    const { params } = section;
+    const { name, value, isActive } = param;
+    const existingParam = params.find(x => x.name === name);
+
+    if (!isActive) {
+      params.splice(params.indexOf(existingParam));
+    } else {
+      if (existingParam) {
+        existingParam.value = value;
+      } else {
+        params.push(param);
+      }
+    }
+
+    this.setState({ playlistSection: playlistSections });
+  };
+
   render() {
+    const sectionItems = this.state.playlistSections.map((section, index) => (
+      <PlaylistSection
+        key={index}
+        index={index}
+        onDurationChange={this.handleDurationChange}
+        onParamChange={this.handleParamChange}
+      />
+    ));
+
     return (
       <div className={styles.page}>
-        <div className={styles.selector}>
-          <div className={styles.header}>
-            <Header label="Select your Playlists to inspire the Curator" />
-          </div>
-
-          <h3>How long should the playlist last?</h3>
-
-          <div className={styles.duration} id="durationSlider">
-            <input type="range" min="10" max="120" className={styles.slider} />
-          </div>
-          <div id="durationSpan"></div>
-          <span>minutes</span>
+        <div className={styles.sections}>{sectionItems}</div>
+        <div className={styles.buttons}>
+          <Button label="Add New Section" />
         </div>
-        <PlaylistParameterSelector />
-        {/* <PlaylistSelector playlists={} onToggle={} />
-        <div className={styles.button}>
-          <Button
-            onClick={}
-            label="Create new Playlist"
-            hasError={}
-          />
-        </div> */}
       </div>
     );
   }
