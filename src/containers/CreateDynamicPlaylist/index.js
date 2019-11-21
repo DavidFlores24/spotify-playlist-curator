@@ -61,6 +61,17 @@ export class CreateDynamicPlaylist extends Component {
     this.setState({ playlistSections: playlistSections });
   };
 
+  addNewSection = () => {
+    const sections = [...this.state.playlistSections];
+    sections.push({
+      sectionIndex: sections.length + 1,
+      duration: 0,
+      params: []
+    });
+
+    this.setState({ playlistSections: sections });
+  };
+
   render() {
     const sectionItems = this.state.playlistSections.map((section, index) => (
       <PlaylistSection
@@ -75,7 +86,7 @@ export class CreateDynamicPlaylist extends Component {
       <div className={styles.page}>
         <div className={styles.sections}>{sectionItems}</div>
         <div className={styles.buttons}>
-          <Button label="Add New Section" />
+          <Button label="Add New Section" onClick={this.addNewSection} />
         </div>
       </div>
     );
