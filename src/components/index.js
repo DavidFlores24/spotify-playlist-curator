@@ -13,3 +13,5 @@ export { replacementTrack as ReplacementTrack } from "./replacementTrack";
 export { overlay as Overlay } from "./overlay";
 export { errorOverlay as ErrorOverlay } from "./errorOverlay";
 export { PlaylistSelector } from "./PlaylistSelector";
+export { PlaylistParameter } from "./PlaylistParameter";
+export { PlaylistParameterSelector } from "./PlaylistParameterSelector";
