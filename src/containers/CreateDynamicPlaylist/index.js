@@ -64,7 +64,7 @@ export class CreateDynamicPlaylist extends Component {
   addNewSection = () => {
     const sections = [...this.state.playlistSections];
     sections.push({
-      sectionIndex: sections.length + 1,
+      sectionIndex: sections.length,
       duration: 0,
       params: []
     });
