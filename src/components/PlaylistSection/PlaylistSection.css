@@ -1,0 +1,9 @@
+.label {
+    display: inline-block;
+    width: 13%;
+}
+
+.durationSlider {
+    display: inline-block;
+    width: 82%;
+}
