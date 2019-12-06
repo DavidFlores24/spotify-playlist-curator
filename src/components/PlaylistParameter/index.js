@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Slider } from '../index';
+
 import styles from "./PlaylistParameter.css";
 
 export const PlaylistParameter = props => {
@@ -7,7 +9,7 @@ export const PlaylistParameter = props => {
   const sliderClasses = [styles.slider];
 
   if (props.isActive) {
-    sliderClasses.push(styles.active);
+    classes.push(styles.active);
   }
 
   const sliderStep =
@@ -15,17 +17,18 @@ export const PlaylistParameter = props => {
 
   return (
     <div className={classes.join(" ")}>
-      <div className={classes.name} onClick={() => props.onClick(props.index)}>
+      <div className={styles.name} onClick={() => props.onClick(props.index)}>
         {props.children}
       </div>
-      <input
-        className={sliderClasses.join(" ")}
-        type="range"
-        min={props.range.min}
-        max={props.range.max}
-        step={sliderStep}
-        onInput={e => props.onInput(props.index, e.target.value)}
-      />
+      <div className={sliderClasses.join(' ')}>
+        <Slider
+          min={props.range.min}
+          max={props.range.max}
+          step={sliderStep}
+          onInput={e => props.onInput(props.index, e.target.value)}
+          id={props.children.toLowerCase()}>
+        </Slider>
+      </div>
     </div>
   );
 };

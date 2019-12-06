@@ -1,0 +1,26 @@
+.parameter {
+    margin-top: 2.5%;
+    opacity: 0.3;
+
+    transition: 0.5s;
+}
+
+.active {
+    opacity: 1.0;
+}
+
+.slider {
+    display: inline-block;
+    width: 82%;
+    pointer-events: none;
+}
+
+.active .slider {
+    pointer-events: all;
+}
+
+.name {
+    cursor: pointer;
+    display: inline-block;
+    width: 13%;
+}
