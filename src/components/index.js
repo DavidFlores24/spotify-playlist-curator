@@ -16,3 +16,4 @@ export { PlaylistSelector } from "./PlaylistSelector";
 export { PlaylistParameter } from "./PlaylistParameter";
 export { PlaylistParameterSelector } from "./PlaylistParameterSelector";
 export { PlaylistSection } from "./PlaylistSection";
+export { Slider } from './Slider';
