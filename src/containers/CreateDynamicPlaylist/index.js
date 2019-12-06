@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import {
   Button,
-  Header,
-  PlaylistSelector,
   PlaylistSection
 } from "../../components";
 
