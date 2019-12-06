@@ -7,13 +7,7 @@ import {
   generateRecommendations
 } from "../../utils/playlistGenerationUtils";
 
-import {
-  Button,
-  Header,
-  PlaylistItem,
-  Playlist,
-  PlaylistSelector
-} from "../../components";
+import { Button, Header, Playlist, PlaylistSelector } from "../../components";
 
 import { ErrorBoundary } from "../../hoc";
 
