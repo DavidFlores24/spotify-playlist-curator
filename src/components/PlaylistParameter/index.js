@@ -26,7 +26,7 @@ export const PlaylistParameter = props => {
           max={props.range.max}
           step={sliderStep}
           onInput={e => props.onInput(props.index, e.target.value)}
-          id={props.children.toLowerCase()}>
+          id={`${props.children.toLowerCase()}_${props.sectionIndex}`}>
         </Slider>
       </div>
     </div>
