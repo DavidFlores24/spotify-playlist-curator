@@ -26,11 +26,12 @@ export class PlaylistParameterSelector extends Component {
   }
 
   handleClick = paramIndex => {
-    const selectedParams = this.state.selectedParams;
+    const selectedParams = [...this.state.selectedParams];
     let param = selectedParams.find(x => x.paramIndex === paramIndex);
 
     if (param) {
-      selectedParams.splice(paramIndex);
+      selectedParams.splice(selectedParams.indexOf(param), 1);
+      param.isActive = false;
     } else {
       const newParam = params[paramIndex];
 
@@ -67,6 +68,7 @@ export class PlaylistParameterSelector extends Component {
       <PlaylistParameter
         key={index}
         index={index}
+        sectionIndex={this.state.sectionIndex}
         range={param.range}
         onInput={this.handleInput}
         onClick={this.handleClick}
@@ -76,6 +78,6 @@ export class PlaylistParameterSelector extends Component {
       </PlaylistParameter>
     ));
 
-    return <div>{paramItems}</div>;
+    return <div className={styles.selector}>{paramItems}</div>;
   }
 }
