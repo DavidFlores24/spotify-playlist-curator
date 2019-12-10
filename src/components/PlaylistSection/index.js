@@ -13,7 +13,7 @@ export const PlaylistSection = props => {
           min='3' 
           max='60' 
           onInput={e => props.onDurationChange(props.index, e.target.value)}
-          id='duration'>
+          id={`duration_${props.index}`}>
         </Slider>
       </div>
       <div className={styles.parameters}>
