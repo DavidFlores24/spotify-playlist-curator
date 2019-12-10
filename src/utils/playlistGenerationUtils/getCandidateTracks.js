@@ -21,11 +21,9 @@ export async function getCandidateTracks(
     const playlistTracks = [];
     const includedTracks = [];
 
-    const numberOfRetries = 0;
-
     while (
-      newPlaylistDuration - overshoot > coveredTime &&
-      numberOfRetries < 5
+      newPlaylistDuration - overshoot >
+      coveredTime
     ) {
       res.forEach(playlist => {
         let { tracks } = playlist;
@@ -48,7 +46,6 @@ export async function getCandidateTracks(
             break;
           }
         }
-        numberOfRetries++;
       });
     }
 
