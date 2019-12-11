@@ -3,12 +3,13 @@ import { getAudioFeatures } from '../spotifyUtils';
 export async function getTracksFeatures(playlists) {
     let trackIds = [];
     let tracks = [];
+
     playlists.map(playlist => {
-        let { tracks: playlistTracks } = playlist;
+        let playlistTracks = playlist.tracks.map(track => { return { track, playlist: playlist.playlist }});
         tracks.push(playlistTracks);
 
         playlistTracks = playlistTracks.filter(track => track !== null);
-        trackIds.push(playlistTracks.map(track => track.id));
+        trackIds.push(playlistTracks.map(track => track.track.id));
     });
     trackIds = trackIds.flat();
     tracks = tracks.flat();
@@ -25,7 +26,7 @@ export async function getTracksFeatures(playlists) {
 
     const features = [];
     tracks.map(track => {
-        const audioFeature = audioFeatures.find(feature => feature.track_href === track.href);
+        const audioFeature = audioFeatures.find(feature => feature.track_href === track.track.href);
         features.push({ track, audioFeature });
     })
     

@@ -108,10 +108,17 @@ export class CreateDynamicPlaylist extends Component {
     }
 
     const sections = [...this.state.playlistSections];
-    sections.map(section => {
+    let chunks = [];
+
+    sections.forEach((section, index) => {
       const { duration, params } = section;
-      generatePlaylistChunk(duration, this.state.selectedPlaylists, params);
+      const chunk = generatePlaylistChunk(duration * 60000, index, this.state.selectedPlaylists, params);
+      
+      chunks.push(chunk);
     });
+
+    chunks = await Promise.all(chunks);
+    console.log(chunks);
   }
 
   render() {
