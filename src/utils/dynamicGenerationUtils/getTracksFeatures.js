@@ -26,7 +26,7 @@ export async function getTracksFeatures(playlists) {
 
     const features = [];
     tracks.map(track => {
-        const audioFeature = audioFeatures.find(feature => feature.track_href === track.track.href);
+        const audioFeature = audioFeatures.find(feature => feature && feature.track_href === track.track.href);
         features.push({ track, audioFeature });
     })
     
