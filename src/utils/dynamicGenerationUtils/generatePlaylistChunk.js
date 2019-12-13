@@ -10,25 +10,35 @@ export async function generatePlaylistChunk(duration, sectionIndex, playlists = 
     const playlistTracks = await Promise.all(trackPromises);
     const tracksFeatures = await getTracksFeatures(playlistTracks);
 
-    const candidateTracks = getFeaturedTracks(tracksFeatures, params);
-    const sortedPlaylists = sortPlaylists(playlists, candidateTracks);
-    return { sectionIndex, tracks: createChunk(sortedPlaylists, duration) };
+    let threshold = 0.1;
+    let candidateTracks = getFeaturedTracks(tracksFeatures, params, threshold);
+    let sortedPlaylists = sortPlaylists(playlists, candidateTracks);
+    let chunk = createChunk(sortedPlaylists, duration);
+
+    while(chunk.coveredTime < duration - 30000 && threshold < 0.5) {
+        threshold += 0.1;
+        candidateTracks = getFeaturedTracks(tracksFeatures, params, threshold);
+        sortedPlaylists = sortPlaylists(playlists, candidateTracks);
+        chunk = createChunk(sortedPlaylists, duration);
+    }
+    
+    return { sectionIndex, tracks: chunk.tracks };
 }
 
-const getFeaturedTracks = (tracks, params) => {
+const getFeaturedTracks = (tracks, params, threshold) => {
     let candidateTracks = [];
     for (const track of tracks) {
-        if (track.audioFeature && hasCorrectFeatures(track, params)) {
+        if (track.audioFeature && hasCorrectFeatures(track, params, threshold)) {
             candidateTracks.push(track.track);
         }
     }
     return candidateTracks;
 }
 
-const hasCorrectFeatures = (trackFeature, params) =>  
+const hasCorrectFeatures = (trackFeature, params, threshold) =>  
     params.every(param => 
-        trackFeature.audioFeature[param.name] >= (param.value - param.value * 0.1) ||
-        trackFeature.audioFeature[param.name] <= (param.value + param.value * 0.1)
+        trackFeature.audioFeature[param.name] >= (param.value - param.value * threshold) ||
+        trackFeature.audioFeature[param.name] <= (param.value + param.value * threshold)
     );
 
 const sortPlaylists = (playlists, candidateTracks) => playlists.map(playlist => {
@@ -63,10 +73,10 @@ const createChunk = (playlists, duration) => {
                         break;
                     }
                 }
-                numberOfRetries++;
             }
         });
+        numberOfRetries++;
     }
 
-    return chunkTracks;
+    return { tracks: chunkTracks, coveredTime };
 }
