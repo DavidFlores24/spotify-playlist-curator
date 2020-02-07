@@ -1,0 +1,19 @@
+.selector {
+  display: block;
+
+  width: 100%;
+}
+
+.playlists {
+  width: 100%;
+
+  margin-top: 3.5vw;
+}
+
+.column {
+  width: 33.3333333%;
+
+  display: inline-block;
+
+  vertical-align: top;
+}

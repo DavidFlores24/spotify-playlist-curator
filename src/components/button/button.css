@@ -1,23 +1,29 @@
-.button{
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 2.5vw;
-    display: inline-block;
-    background-color: transparent;
-    border: 0.156vw solid #6BDB3B;
-    padding: 1.042vw 2.084vw;
-    border-radius: 3vw;
+.button {
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 2vw;
+  display: inline-block;
+  background-color: transparent;
+  border: 0.156vw solid #6bdb3b;
+  padding: 1.042vw 2.084vw;
+  border-radius: 3vw;
 
-    transition: background-color 0.5s, border-color 0.5s, color 0.5s;
+  transition: background-color 0.5s, border-color 0.5s, color 0.5s;
 }
 
 .button:visited {
-  color: #c5c6c7; 
+  color: #c5c6c7;
 }
 
 .button:hover {
-    background-color: #34AD00;
-    border-color: #34AD00;
-    color: #fff;
+  background-color: #34ad00;
+  border-color: #34ad00;
+  color: #fff;
+}
+
+.error,
+.error:hover {
+  background-color: #db4b3b;
+  border-color: #360500;
 }

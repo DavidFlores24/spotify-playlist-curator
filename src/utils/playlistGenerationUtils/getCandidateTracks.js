@@ -10,44 +10,50 @@
 */
 
 export async function getCandidateTracks(
-	playlistPromises,
-	newPlaylistDuration
+  playlistPromises,
+  newPlaylistDuration
 ) {
-	let playlistTracks = [];
+  let playlistTracks = [];
 
-	playlistTracks = await Promise.all(playlistPromises).then(res => {
-		const overshoot = 30000;
-		let coveredTime = 0;
-		const playlistTracks = [];
-		const includedTracks = [];
+  playlistTracks = await Promise.all(playlistPromises).then(res => {
+    const overshoot = 30000;
+    let coveredTime = 0;
+    const playlistTracks = [];
+    const includedTracks = [];
 
-		while (newPlaylistDuration - overshoot > coveredTime) {
-			res.forEach(playlist => {
-				let { tracks } = playlist;
-				const { playlist: playlistId } = playlist;
+    const numberOfRetries = 0;
 
-				tracks = tracks.filter(track => track !== null);
-				tracks.sort((a, b) => b.popularity - a.popularity);
+    while (
+      newPlaylistDuration - overshoot > coveredTime &&
+      numberOfRetries < 5
+    ) {
+      res.forEach(playlist => {
+        let { tracks } = playlist;
+        const { playlist: playlistId } = playlist;
 
-				// need to use a for loop to be able to break
-				for (let i = 0; i < tracks.length; i++) {
-					const track = tracks[i];
-					const { id, duration_ms } = track;
-					if (
-						!includedTracks.includes(id) &&
-						coveredTime + duration_ms <= newPlaylistDuration + overshoot
-					) {
-						playlistTracks.push({ playlistId, track });
-						includedTracks.push(id);
-						coveredTime += duration_ms;
-						break;
-					}
-				}
-			});
-		}
+        tracks = tracks.filter(track => track !== null);
+        tracks.sort((a, b) => b.popularity - a.popularity);
 
-		return playlistTracks;
-	});
+        // need to use a for loop to be able to break
+        for (let i = 0; i < tracks.length; i++) {
+          const track = tracks[i];
+          const { id, duration_ms } = track;
+          if (
+            !includedTracks.includes(id) &&
+            coveredTime + duration_ms <= newPlaylistDuration + overshoot
+          ) {
+            playlistTracks.push({ playlistId, track });
+            includedTracks.push(id);
+            coveredTime += duration_ms;
+            break;
+          }
+        }
+        numberOfRetries++;
+      });
+    }
 
-	return playlistTracks;
+    return playlistTracks;
+  });
+
+  return playlistTracks;
 }

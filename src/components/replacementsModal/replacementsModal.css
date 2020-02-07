@@ -1,10 +1,32 @@
 .replacements {
-	display: none;
+	display: inline-block;
+	visibility: hidden;
+
+	opacity: 0;
+
+	height: 0;
 	width: 50%;
+
 	vertical-align: middle;
 	background: rgba(255, 255, 255, 0.1);
+
+	transition: 0.5s;
 }
 
 .show {
-	display: inline-block;
+	visibility: visible;
+
+	opacity: 1;
+
+	height: 21.875vw;
+}
+
+.heading {
+	font-size: 2vw;
+	margin-left: 2vw;
+}
+
+.subheading {
+	font-size: 1.2vw;
+	margin: 1vw 2vw 2vw;
 }
