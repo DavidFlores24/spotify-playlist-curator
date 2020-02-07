@@ -9,3 +9,4 @@ export { getSpotifyUser };
 export { postToSpotify };
 export { getTrackFromSpotify } from "./getTrackFromSpotify";
 export { getRecommendedTracks } from "./getRecommendedTracks";
+export { getAudioFeatures } from './getAudioFeatures';
