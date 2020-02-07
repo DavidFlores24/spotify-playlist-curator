@@ -6,14 +6,15 @@ const header = {
 	Authorization: `Bearer ${token}`
 };
 
-export async function getRecommendedTracks(baseTracks, baseDuration, limit) {
+export async function getRecommendedTracks(baseTracks, baseDuration, limit, params = {}) {
 	const seeds = baseTracks.map(track => track.id);
 
 	const queryParams = {
 		limit,
 		max_duration: baseDuration + 30000,
 		min_duration: baseDuration - 30000,
-		seed_tracks: seeds.join(",")
+		seed_tracks: seeds.join(","),
+		...params
 	};
 
 	const recommendations = await getFromSpotify(
