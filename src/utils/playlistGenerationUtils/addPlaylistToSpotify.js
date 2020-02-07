@@ -21,7 +21,7 @@ export const addPlaylistToSpotify = playlistToAdd => {
 
     postToSpotify(`users/${id}/playlists`, header, {}, playlist).then(res => {
       const { id } = res;
-      const uris = tracks.map(track => track.track.uri);
+      const uris = tracks.map(track => track.uri);
 
       postToSpotify(`playlists/${id}/tracks`, header, {}, { uris });
     });

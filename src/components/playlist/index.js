@@ -14,6 +14,7 @@ export class Playlist extends Component {
 
     this.state = {
       tracks: [],
+      replacementTracks: [],
       name: "",
 
       show: false,
@@ -70,10 +71,12 @@ export class Playlist extends Component {
 
   createTrackItems = tracks => {
     return tracks.map((track, index) => {
-      const playlistCookie = getCookie(`playlist_${track.playlistId}`);
-      const replacementTracks =
-        playlistCookie === "" ? [] : JSON.parse(playlistCookie);
-
+      let replacementTracks = [ ...this.state.replacementTracks ];
+      replacementTracks = 
+      replacementTracks.length > 0 ? 
+      replacementTracks.filter(replacement => replacement.replacementId === track.replacementId) : 
+      [];
+      
       return (
         <TrackItem
           key={index}
@@ -112,21 +115,23 @@ export class Playlist extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
       nextProps.tracks !== prevState.tracks ||
-      nextProps.show !== prevState.show
+      nextProps.show !== prevState.show ||
+      nextProps.replacementTracks !== prevState.replacementTracks
     ) {
-      return { tracks: nextProps.tracks, show: nextProps.show };
+      return { tracks: nextProps.tracks, show: nextProps.show, replacementTracks: nextProps.replacementTracks };
     } else {
       return null;
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { show, tracks } = prevProps;
+    const { show, tracks, replacementTracks } = prevProps;
 
-    if (this.state.show !== show || this.state.tracks !== tracks) {
+    if (this.state.show !== show || this.state.tracks !== tracks || this.state.replacementTracks !== replacementTracks) {
       this.setState({
         tracks: tracks,
-        show: show
+        show: show,
+        replacementTracks: replacementTracks
       });
     }
   }

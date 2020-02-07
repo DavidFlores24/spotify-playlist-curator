@@ -1,14 +1,15 @@
 import { getPlaylistTracks } from '../playlistGenerationUtils';
 import { getTracksFeatures } from './index';
 
-export async function generatePlaylistChunk(duration, sectionIndex, playlists = [], params = []) {
+export async function generatePlaylistChunk(duration, sectionIndex, playlists = [], params = [], includedTracks = []) {
     if (playlists === []) {
         return { sectionIndex, tracks: [] };
     }
 
     const trackPromises = playlists.map(playlist => getPlaylistTracks(playlist.id));
     const playlistTracks = await Promise.all(trackPromises);
-    const tracksFeatures = await getTracksFeatures(playlistTracks);
+    let tracksFeatures = await getTracksFeatures(playlistTracks);
+    tracksFeatures = tracksFeatures.filter(trackFeature => !includedTracks.includes(trackFeature.track.track.id));
 
     let threshold = 0.1;
     let candidateTracks = getFeaturedTracks(tracksFeatures, params, threshold);
